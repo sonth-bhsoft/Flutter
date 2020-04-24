@@ -74,6 +74,7 @@ class _MyAppState extends State<MyApp> {
                       OutlineButton(
                         child: Text("Logout"),
                         onPressed: () {
+                          
                           _logout();
                         },
                       )
