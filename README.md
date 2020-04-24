@@ -1,2 +1,2 @@
 # Flutter
-Flutter traning
+Flutter training
