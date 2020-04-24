@@ -41,6 +41,7 @@ class _MyAppState extends State<HomePage> {
             Positioned(
               top: 30.0,
               right: 15.0,
+
               left: 15.0,
               child: Container(
                 height: 50.0,
