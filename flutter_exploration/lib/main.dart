@@ -73,7 +73,6 @@ class _MyAppState extends State<MyApp> {
                       Text("Email: " + userProfile["email"]),
                       OutlineButton(
                         child: Text("Logout"),
-                        
                         onPressed: () {
                           _logout();
                         },
