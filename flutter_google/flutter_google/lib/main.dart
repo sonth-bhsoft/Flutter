@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -22,6 +24,7 @@ class HomePage extends StatefulWidget {
 class _MyAppState extends State<HomePage> {
   GoogleMapController mapController;
   String sreachAddr;
+  final Map<String, Marker> _markers = {};
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,15 +36,14 @@ class _MyAppState extends State<HomePage> {
             GoogleMap(
               onMapCreated: onCreated,
               initialCameraPosition:
-              CameraPosition(target: LatLng(40.7128, -74.0060), zoom: 10.0),
+                  CameraPosition(target: LatLng(40.7128, -74.0060), zoom: 10.0),
               myLocationEnabled: true,
               myLocationButtonEnabled: true,
-
+              markers: _markers.values.toSet(),
             ),
             Positioned(
               top: 30.0,
               right: 15.0,
-
               left: 15.0,
               child: Container(
                 height: 50.0,
@@ -70,12 +72,17 @@ class _MyAppState extends State<HomePage> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _getLocation,
+        tooltip: 'Get Location',
+        child: Icon(Icons.flag),
+      ),
     );
   }
 
   void onCreated(controller) {
     setState(() {
-      mapController = controller;
+     mapController=controller;
     });
   }
 
@@ -83,13 +90,26 @@ class _MyAppState extends State<HomePage> {
     Geolocator().placemarkFromAddress(sreachAddr).then((result) {
       mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
           target:
-          LatLng(result[0].position.latitude, result[0].position.longitude),
-          zoom: 14.4746)));
+              LatLng(result[0].position.latitude, result[0].position.longitude),
+          zoom: 15.0)));
+      setState(() {
+        final marker = Marker(
+          markerId: MarkerId("curr_loc"),
+          position:
+              LatLng(result[0].position.latitude, result[0].position.longitude),
+        );
+        _markers["Current Location"] = marker;
+      });
     });
   }
 
-
-
-
-
+  void _getLocation() async {
+    var currentLocation = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+    setState(() {
+      mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+          target: LatLng(currentLocation.latitude, currentLocation.longitude),
+          zoom: 15.0)));
+    });
+  }
 }
